@@ -27,12 +27,12 @@ from aiogram.types import (
 )
 
 # ── O'ZGARTIRING ─────────────────────────────────────────────
-BOT_TOKEN        = os.environ.get("BOT_TOKEN", "TOKEN_BU_YERGA")
+BOT_TOKEN        = os.environ.get("BOT_TOKEN", "8893001472:AAGr4kG9wlX1yFaDnfUTGz5Nq08OJgNHiz4")
 ADMIN_ID         = int(os.environ.get("ADMIN_ID", "8541213007"))
 PAYSTARS_API_URL = os.environ.get("PAYSTARS_API_URL", "https://paystars.uz/api/v1")
-PAYSTARS_API_KEY = os.environ.get("PAYSTARS_API_KEY", "API_KEY_BU_YERGA")
+PAYSTARS_API_KEY = os.environ.get("PAYSTARS_API_KEY", "ps_4iuhqAsn0wK82yegVy2tvPgo3SR6hkpL6TE6z4pKclo")
 SHOP_ID          = int(os.environ.get("SHOP_ID", "24"))
-SHOP_KEY         = os.environ.get("SHOP_KEY", "SHOP_KEY_BU_YERGA")
+SHOP_KEY         = os.environ.get("SHOP_KEY", "sk_f37c8fa4298ab6ec43e91c20d2400a80")
 SHOP_API         = os.environ.get("SHOP_API", "https://694bccc3c315b.myxvest1.ru/super/api.php")
 DB_PATH          = os.environ.get("DB_PATH", "bot_data.db")
 # ─────────────────────────────────────────────────────────────
