@@ -932,23 +932,38 @@ async def paystars_bal(msg: Message):
 # ═══════════════════════════════════════════════════════════════
 #   O'Z-O'ZINI UYG'OTISH (SELF-PING) — har 90 soniyada
 # ═══════════════════════════════════════════════════════════════
-await dp.start_polling(
-    bot,
-    skip_updates=True,
-    allowed_updates=dp.resolve_used_update_types()
-)
+from aiohttp import web
+
+SELF_PORT = int(os.environ.get("PORT", 10000))
+
+async def _health(request):
+    return web.Response(text="OK")
+
+async def run_webserver():
+    app = web.Application()
+    app.router.add_get("/", _health)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    port = int(os.environ.get("PORT", 10000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
 
 # ═══════════════════════════════════════════════════════════════
 #   MAIN
 # ═══════════════════════════════════════════════════════════════
-
 async def main():
     logger.info("Bot ishga tushmoqda...")
     await init_db()
     logger.info("DB tayyor.")
 
-    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    dp  = Dispatcher(storage=MemoryStorage())
+    bot = Bot(
+        token=BOT_TOKEN,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+    )
+
+    dp = Dispatcher(storage=MemoryStorage())
 
     dp.include_router(r_common)
     dp.include_router(r_admin)
@@ -956,19 +971,28 @@ async def main():
     dp.include_router(r_shop)
 
     await bot.delete_webhook(drop_pending_updates=True)
-    logger.info("Polling boshlandi. Bot tayyor! @SpellyStars_Bot")
 
-    try:
-        await asyncio.gather(
-            dp.start_polling(bot, skip_updates=True,
-                             allowed_updates=dp.resolve_used_update_types()),
-            run_webserver(),
-            self_ping(),
+    from aiohttp import web
+
+    async def health(request):
+        return web.Response(text="OK")
+
+    app = web.Application()
+    app.router.add_get("/", health)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+
+    port = int(os.environ.get("PORT", 10000))
+
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+
+    logger.info(f"Web server {port} portda ishga tushdi.")
+    logger.info("Polling boshlandi.")
+
+    await dp.start_polling(
+        bot,
+        skip_updates=True,
+        allowed_updates=dp.resolve_used_update_types()
         )
-    finally:
-        await bot.session.close()
-        logger.info("Bot to'xtatildi.")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
