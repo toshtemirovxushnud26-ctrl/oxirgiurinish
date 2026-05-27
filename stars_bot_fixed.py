@@ -932,38 +932,11 @@ async def paystars_bal(msg: Message):
 # ═══════════════════════════════════════════════════════════════
 #   O'Z-O'ZINI UYG'OTISH (SELF-PING) — har 90 soniyada
 # ═══════════════════════════════════════════════════════════════
-
-from aiohttp import web
-
-SELF_PORT = int(os.environ.get("BOT_PORT", 5000))
-
-
-async def _health(request):
-    return web.Response(text="OK")
-
-
-async def run_webserver():
-    app = web.Application()
-    app.router.add_get("/", _health)
-    app.router.add_get("/health", _health)
-    runner = web.AppRunner(app)
-    await runner.setup()
-    await web.TCPSite(runner, "0.0.0.0", SELF_PORT).start()
-    logger.info(f"Web server port {SELF_PORT} da ishga tushdi.")
-
-
-async def self_ping():
-    await asyncio.sleep(30)
-    url = f"http://localhost:{SELF_PORT}/health"
-    while True:
-        try:
-            async with httpx.AsyncClient(timeout=10) as client:
-                r = await client.get(url)
-                logger.info(f"Self-ping OK ({r.status_code})")
-        except Exception as e:
-            logger.warning(f"Self-ping xato: {e}")
-        await asyncio.sleep(90)
-
+await dp.start_polling(
+    bot,
+    skip_updates=True,
+    allowed_updates=dp.resolve_used_update_types()
+)
 
 # ═══════════════════════════════════════════════════════════════
 #   MAIN
